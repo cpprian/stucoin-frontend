@@ -1,26 +1,15 @@
-"use client"
-
-import { Button } from '@/components/ui/button'
-import { ToastAction } from '@/components/ui/toast'
-import { useToast } from '@/components/ui/use-toast'
+import { Footer } from "./_components/footer";
+import { Heading } from "./_components/heading";
+import { Heroes } from "./_components/heroes";
 
 export default function Home() {
-  const { toast } = useToast() 
-
   return (
-    <Button
-      onClick={() => {
-        toast({
-          variant: "default",
-          title: "Uh oh! Something went wrong.",
-          description: "There was a problem with your request.",
-          action: (
-            <ToastAction altText='Try again'>Try again</ToastAction>
-          ),
-        })
-      }}
-    >
-      Show Toast
-    </Button>
+    <div className='min-h-full flex flex-col dark:bg-[#1F1F1F]'>
+      <div className="flex flex-col items-center justify-center md:justify-start text-center gap-y-8 flex-1 px-6 pb-10">
+        <Heading />
+        <Heroes />      
+      </div>
+      <Footer />
+    </div>
   )
 }
