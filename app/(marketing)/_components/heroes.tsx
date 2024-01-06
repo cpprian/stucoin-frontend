@@ -31,13 +31,13 @@ export const Heroes = () => {
                                 <div className="flex items-center">
                                     <div className="relative w-[300px] h-[300px] sm:w-[350px] sm:h-[350px] md:h-[400px] md:w-[400px]">
                                         <Image
-                                            src={"/stucoin-frontend/"+name+".png"}
+                                            src={"https://cpprian.github.io/stucoin-frontend/"+name+".png"}
                                             fill
                                             className="object-contains dark:hidden"
                                             alt="Tasks"
                                         />
                                         <Image
-                                            src={"/stucoin-frontend/"+name+"-dark.png"}
+                                            src={"https://cpprian.github.io/stucoin-frontend/"+name+"-dark.png"}
                                             fill
                                             className="object-contains hidden dark:block"
                                             alt="Tasks"
