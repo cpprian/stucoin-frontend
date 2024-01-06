@@ -2,7 +2,8 @@
 const nextConfig = {
     "output": "export",
     reactStrictMode: true,
-    basePath: "/app"
+    basePath: "/stucoin-frontend",
+    assetPrefix: "/stucoin-frontend/",
 }
 
 module.exports = nextConfig
