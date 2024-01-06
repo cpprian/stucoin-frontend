@@ -3,7 +3,7 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import { Logo } from "./logo";
 import { Button } from "@/components/ui/button";
-import { SignInButton, UserButton } from "@clerk/clerk-react";
+import { SignInButton } from "@clerk/clerk-react";
 import { useConvexAuth } from "convex/react";
 import { redirect } from "next/navigation";
 

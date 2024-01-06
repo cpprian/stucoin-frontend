@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
-import { SignIn } from "./sign-in";
 
 export const Heroes = () => {
     const heroes_name = ["tasks", "skills", "resume", "winners"]
