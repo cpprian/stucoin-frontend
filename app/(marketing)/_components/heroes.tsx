@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -51,8 +51,6 @@ export const Heroes = () => {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                {/* <CarouselPrevious />
-                <CarouselNext /> */}
             </Carousel>
         </div>
     );
