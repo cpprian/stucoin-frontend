@@ -41,10 +41,8 @@ jobs:
         uses: oven-sh/setup-bun@v1.1.1
       - name: Run Bun
         run: bun install
-      - name: Build with Next.js
+      - name: Build with Next.js & export static HTML
         run: bun run build
-      - name: Static HTML export with Next.js
-        run: bun run export
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
