@@ -2,12 +2,18 @@
 const nextConfig = {
     "output": "export",
     reactStrictMode: true,
-    basePath: "/stucoin-frontend",
+    basePath: "",
     assetPrefix: "/stucoin-frontend/",
     images: {
-        loader: "imgix",
-        path: "",
-    },
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: 'cpprian.github.io',
+            port: '',
+            pathname: '/stucoin-frontend/public',
+          },
+        ],
+      },
 }
 
 module.exports = nextConfig
