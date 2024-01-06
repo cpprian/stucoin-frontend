@@ -6,7 +6,7 @@ const nextConfig = {
     assetPrefix: "/stucoin-frontend/",
     images: {
         loader: "imgix",
-        path: "/",
+        path: "/stucoin-frontend",
     },
 }
 
