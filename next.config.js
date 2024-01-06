@@ -2,7 +2,7 @@
 const nextConfig = {
     "output": "export",
     reactStrictMode: true,
-    basePath: "https://github.com/cpprian/stucoin-frontend"
+    basePath: "/app"
 }
 
 module.exports = nextConfig
