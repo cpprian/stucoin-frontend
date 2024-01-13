@@ -13,7 +13,7 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;
-    const role = req.auth?.user.role;
+    const role = req.auth?.user?.role;
 
     const isApiRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
