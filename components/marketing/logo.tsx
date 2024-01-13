@@ -23,7 +23,7 @@ export const Logo = () => {
             <Button
                 onClick={onClick} 
                 variant="ghost"
-                className={cn("font-semibold", font.className, "text-xl")}
+                className={cn("font-semibold", font.className, "text-xl cursor-pointer")}
             >
                 📐Stucoin
             </Button>

@@ -13,6 +13,7 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;
+    const role = req.auth?.user.role;
 
     const isApiRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
@@ -22,7 +23,14 @@ export default auth((req) => {
 
     if (isAuthRoute) {
         if (isLoggedIn) {
-            return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT));
+            switch (role) {
+                case "ADMIN":
+                    return Response.redirect(new URL("/admin", nextUrl));
+                case "TEACHER":
+                    return Response.redirect(new URL("/teacher", nextUrl));
+                default:
+                    return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+            }
         }
         return null;
     }
