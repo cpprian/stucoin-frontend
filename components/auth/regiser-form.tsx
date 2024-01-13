@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { Button } from "@/components/ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Role } from "@prisma/client";
 
 export const RegisterForm = () => {
     const [error, setError] = useState<string | undefined>("");
@@ -24,6 +26,8 @@ export const RegisterForm = () => {
             email: "",
             password: "",
             name: "",
+            surname: "",
+            role: Role.STUDENT,
         },
     });
 
@@ -48,7 +52,7 @@ export const RegisterForm = () => {
             showSocial
         >
             <Form {...form}>
-                <form 
+                <form
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-6"
                 >
@@ -63,7 +67,24 @@ export const RegisterForm = () => {
                                         <Input
                                             {...field}
                                             disabled={isPending}
-                                            placeholder="John Doe"
+                                            placeholder="John"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="surname"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Surname</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            disabled={isPending}
+                                            placeholder="Doe"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -95,7 +116,7 @@ export const RegisterForm = () => {
                                 <FormItem>
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
-                                        <Input 
+                                        <Input
                                             {...field}
                                             disabled={isPending}
                                             placeholder="********"
@@ -107,9 +128,38 @@ export const RegisterForm = () => {
                             )}
                         />
                     </div>
+                    <FormField
+                        control={form.control}
+                        name="role"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Role</FormLabel>
+                                <Select
+                                    disabled={isPending}
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a role" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value={Role.TEACHER}>
+                                            Teacher
+                                        </SelectItem>
+                                        <SelectItem value={Role.STUDENT}>
+                                            Student
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button 
+                    <Button
                         disabled={isPending}
                         type="submit"
                         className="w-full"
