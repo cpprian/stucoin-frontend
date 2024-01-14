@@ -1,3 +1,5 @@
+"use client";
+
 import { logout } from "@/actions/logout";
 import { UserButton } from "@/components/auth/user-button";
 import { useCurrentRole } from "@/hooks/use-current-role";
