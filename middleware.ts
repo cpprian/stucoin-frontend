@@ -29,7 +29,7 @@ export default auth((req) => {
                 case "TEACHER":
                     return Response.redirect(new URL("/teacher", nextUrl));
                 default:
-                    return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+                    return Response.redirect(new URL("/student", nextUrl));
             }
         }
         return null;
