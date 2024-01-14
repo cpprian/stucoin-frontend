@@ -8,12 +8,11 @@ import { useEffect } from "react";
 const StudentPage = () => {
     const role = useCurrentRole();
 
-    if (role !== "STUDENT") {
-        useEffect(() => {
+    useEffect(() => {
+        if (role !== "STUDENT") {
             logout();
-        }, []);
-        return null;
-    }
+        }
+    }, []);
 
     return (
         <div>

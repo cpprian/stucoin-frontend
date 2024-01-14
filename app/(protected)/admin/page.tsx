@@ -8,12 +8,11 @@ import { useEffect } from "react";
 const AdminPage = () => {
     const role = useCurrentRole();
 
-    if (role !== "ADMIN") {
-        useEffect(() => {
+    useEffect(() => {
+        if (role !== "ADMIN") {
             logout();
-        }, []);
-        return null;
-    }
+        }
+    }, []);
 
     return (
         <div>
