@@ -9,15 +9,13 @@ import { register } from "@/actions/register";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { FormError } from "@/components/form-error";
-import { FormSuccess } from "@/components/form-success";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Role } from "@prisma/client";
+import { toast } from "../ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 export const RegisterForm = () => {
-    const [error, setError] = useState<string | undefined>("");
-    const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
 
     const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -32,14 +30,23 @@ export const RegisterForm = () => {
     });
 
     const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-        setError("");
-        setSuccess("");
-
         startTransition(() => {
             register(values)
                 .then((data) => {
-                    setError(data.error)
-                    setSuccess(data.success)
+                    if (data?.error) {
+                        toast({
+                            variant: "destructive",
+                            title: "Uh oh! Something went wrong.",
+                            description: "There was a problem with your request.",
+                            action: <ToastAction altText="Try again">Try again</ToastAction>,
+                        })
+                    } else {
+                        form.reset();
+                        toast({
+                            title: "Account created successfully!",
+                            action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+                        })
+                    }
                 });
         });
     };
@@ -157,8 +164,6 @@ export const RegisterForm = () => {
                             </FormItem>
                         )}
                     />
-                    <FormError message={error} />
-                    <FormSuccess message={success} />
                     <Button
                         disabled={isPending}
                         type="submit"

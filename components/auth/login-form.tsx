@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/form";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import { Button } from "@/components/ui/button";
-import { FormError } from "@/components/form-error";
-import { FormSuccess } from "@/components/form-success";
 import { login } from "@/actions/login";
+import { toast } from "../ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 export const LoginForm = () => {
     const searchParams = useSearchParams();
@@ -29,8 +29,6 @@ export const LoginForm = () => {
         ? "Email already in use with different provider!"
         : "";
 
-    const [error, setError] = useState<string | undefined>("");
-    const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
 
     const form = useForm<z.infer<typeof LoginSchema>>({
@@ -42,23 +40,33 @@ export const LoginForm = () => {
     });
 
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-        setError("");
-        setSuccess("");
-
         startTransition(() => {
             login(values, callbackUrl)
                 .then((data) => {
+                    form.reset();
                     if (data?.error) {
-                        form.reset();
-                        setError(data.error);
+                        toast({
+                            variant: "destructive",
+                            title: "Uh oh! Something went wrong.",
+                            description: "There was a problem with your request.",
+                            action: <ToastAction altText="Try again">Try again</ToastAction>,
+                        })
                     } else {
-                        form.reset();
-                        setSuccess("Logged in successfully!");
+                        toast({
+                            title: "Logged in successfully!",
+                            action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+                        })
                     }
                 })
                 .catch((err) => {
-                    setError("Something went wrong!");
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                        action: <ToastAction altText="Try again">Try again</ToastAction>,
+                    })
                 });
+
         });
     };
 
@@ -70,19 +78,19 @@ export const LoginForm = () => {
             showSocial
         >
             <Form {...form}>
-                <form 
+                <form
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-6"
                 >
                     <div className="space-y-4">
-                        <FormField 
+                        <FormField
                             control={form.control}
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <Input 
+                                        <Input
                                             {...field}
                                             disabled={isPending}
                                             placeholder="user@email.com"
@@ -93,14 +101,14 @@ export const LoginForm = () => {
                                 </FormItem>
                             )}
                         />
-                        <FormField 
+                        <FormField
                             control={form.control}
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
-                                        <Input 
+                                        <Input
                                             {...field}
                                             disabled={isPending}
                                             placeholder="********"
@@ -112,8 +120,6 @@ export const LoginForm = () => {
                             )}
                         />
                     </div>
-                    <FormError message={error || urlError} />
-                    <FormSuccess message={success} />
                     <Button
                         disabled={isPending}
                         type="submit"
