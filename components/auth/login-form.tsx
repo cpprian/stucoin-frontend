@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -21,6 +21,8 @@ import { Button } from "@/components/ui/button";
 import { login } from "@/actions/login";
 import { toast } from "../ui/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export const LoginForm = () => {
     const searchParams = useSearchParams();
@@ -48,7 +50,7 @@ export const LoginForm = () => {
                         toast({
                             variant: "destructive",
                             title: "Uh oh! Something went wrong.",
-                            description: "There was a problem with your request.",
+                            description: urlError ? urlError : "There was a problem with your request.",
                             action: <ToastAction altText="Try again">Try again</ToastAction>,
                         })
                     } else {
@@ -120,6 +122,15 @@ export const LoginForm = () => {
                             )}
                         />
                     </div>
+                    {urlError && (
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>
+                                {urlError}
+                            </AlertDescription>
+                        </Alert>
+                    )}
                     <Button
                         disabled={isPending}
                         type="submit"
