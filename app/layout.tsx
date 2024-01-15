@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { SessionProvider } from "next-auth/react"
 import { auth } from '@/auth'
+import { EdgeStoreProvider } from '@/lib/edgestore'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,20 +23,22 @@ export default async function RootLayout({
 
   return (
     <SessionProvider session={session}>
-      <html lang="en">
-        <body className={inter.className}>
-          <ThemeProvider
-            attribute='class'
-            defaultTheme='system'
-            enableSystem
-            disableTransitionOnChange
-            storageKey='stucoin-platform'
-          >
-            <Toaster />
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
+      <EdgeStoreProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            <ThemeProvider
+              attribute='class'
+              defaultTheme='system'
+              enableSystem
+              disableTransitionOnChange
+              storageKey='stucoin-platform'
+            >
+              <Toaster />
+              {children}
+            </ThemeProvider>
+          </body>
+        </html>
+      </EdgeStoreProvider>
     </SessionProvider>
   )
 }
