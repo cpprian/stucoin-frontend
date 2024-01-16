@@ -7,14 +7,21 @@ import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon, PlusCircle, Search, Settings } from "lucide-react";
+import { ChevronsLeft, FileText, GiftIcon, MenuIcon, PaperclipIcon, PlusCircle, Search, Settings } from "lucide-react";
 import { UserButton } from "@/components/auth/user-button";
 import { Item } from "./item";
 import { Navbar } from "./navbar";
+import { useRewards } from "@/hooks/use-rewards";
+import { useMicroCompetencies } from "@/hooks/use-micro-competencies";
+import { useTasks } from "@/hooks/use-tasks";
+import { FaTasks } from "react-icons/fa";
 
 export const Navigation = () => {
     const router = useRouter();
-    const settings = useSettings();
+    // const settings = useSettings();
+    const rewards = useRewards();
+    const tasks = useTasks();
+    const microCompetencies = useMicroCompetencies();
     const search = useSearch();
     const params = useParams();
     const pathname = usePathname();
@@ -149,9 +156,19 @@ export const Navigation = () => {
                         onClick={search.onOpen}
                     />
                     <Item
-                        label="Settings"
-                        icon={Settings}
-                        onClick={settings.onOpen}
+                        label="See more tasks"
+                        icon={FileText}
+                        onClick={tasks.onOpen}
+                    />
+                    <Item
+                        label="My micro-competencies"
+                        icon={PaperclipIcon}
+                        onClick={microCompetencies.onOpen}
+                    />
+                    <Item
+                        label="Rewards"
+                        icon={GiftIcon}
+                        onClick={rewards.onOpen}
                     />
                     <Item
                         onClick={handleCreate}

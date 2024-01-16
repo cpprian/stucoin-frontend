@@ -1,7 +1,7 @@
 "use client";
 
 import { FaUser } from "react-icons/fa";
-import { ExitIcon } from "@radix-ui/react-icons";
+import { ExitIcon, PersonIcon } from "@radix-ui/react-icons";
 
 import {
     DropdownMenu,
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/avatar";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { LogoutButton } from "@/components/auth/logout-button";
-import { ChevronsLeftRight } from "lucide-react";
+import { ChevronsLeftRight, SettingsIcon } from "lucide-react";
 
 export const UserButton = () => {
     const user = useCurrentUser();
@@ -51,12 +51,12 @@ export const UserButton = () => {
                         {user?.email}
                     </p>
                     <div className="flex items-center gap-x-2">
-                            <Avatar className="h-8 w-8">
-                                <AvatarImage src={user?.image || ""} />
-                                <AvatarFallback className="bg-sky-500">
-                                    <FaUser className="text-white" />
-                                </AvatarFallback>
-                            </Avatar>
+                        <Avatar className="h-8 w-8">
+                            <AvatarImage src={user?.image || ""} />
+                            <AvatarFallback className="bg-sky-500">
+                                <FaUser className="text-white" />
+                            </AvatarFallback>
+                        </Avatar>
                         <div className="space-y-1">
                             <p className="text-sm line-clamp-1">
                                 {user?.name}
@@ -64,13 +64,37 @@ export const UserButton = () => {
                         </div>
                     </div>
                 </div>
-                <DropdownMenuSeparator/>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                     asChild
                     className="w-full cursor-pointer text-muted-foreground"
                 >
                     <LogoutButton>
-                        <div className="flex items-center my-1">
+                        <div className="flex items-center my-1 gap-x-2">
+                            <PersonIcon className="h-4 w-4 mr-2" />
+                            My Profile
+                        </div>
+                    </LogoutButton>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                    asChild
+                    className="w-full cursor-pointer text-muted-foreground"
+                >
+                    <LogoutButton>
+                        <div className="flex items-center my-1 gap-x-2">
+                            <SettingsIcon className="h-4 w-4 mr-2" />
+                            Settings
+                        </div>
+                    </LogoutButton>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                    asChild
+                    className="w-full cursor-pointer text-muted-foreground"
+                >
+                    <LogoutButton>
+                        <div className="flex items-center my-1 gap-x-2">
                             <ExitIcon className="h-4 w-4 mr-2" />
                             Logout
                         </div>
