@@ -23,14 +23,7 @@ export default auth((req) => {
 
     if (isAuthRoute) {
         if (isLoggedIn) {
-            switch (role) {
-                case "ADMIN":
-                    return Response.redirect(new URL("/admin", nextUrl));
-                case "TEACHER":
-                    return Response.redirect(new URL("/teacher", nextUrl));
-                default:
-                    return Response.redirect(new URL("/student", nextUrl));
-            }
+            return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
         }
         return null;
     }
