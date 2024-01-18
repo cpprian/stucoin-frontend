@@ -15,8 +15,10 @@ import { useRewards } from "@/hooks/use-rewards";
 import { useMicroCompetencies } from "@/hooks/use-micro-competencies";
 import { useTasks } from "@/hooks/use-tasks";
 import { FaTasks } from "react-icons/fa";
+import { useCurrentRole } from "@/hooks/use-current-role";
 
 export const Navigation = () => {
+    const role = useCurrentRole();
     const router = useRouter();
     // const settings = useSettings();
     const rewards = useRewards();
@@ -170,11 +172,13 @@ export const Navigation = () => {
                         icon={GiftIcon}
                         onClick={rewards.onOpen}
                     />
-                    <Item
-                        onClick={handleCreate}
-                        label="New page"
-                        icon={PlusCircle}
-                    />
+                    {role === "TEACHER" && (
+                        <Item
+                            onClick={handleCreate}
+                            label="New page"
+                            icon={PlusCircle}
+                        />
+                    )}
                 </div>
             </aside>
             <div

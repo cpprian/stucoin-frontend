@@ -8,7 +8,7 @@ import { Cover } from "@/components/cover";
 import { Toolbar } from "@/components/toolbar";
 
 
-const HomePage = () => {
+const TaskPage = () => {
     const document = "";
 
     if (document === undefined) {
@@ -41,4 +41,4 @@ const HomePage = () => {
     );
 }
 
-export default HomePage;
+export default TaskPage;
