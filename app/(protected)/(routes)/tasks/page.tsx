@@ -6,9 +6,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Editor from "@/components/editor";
 import { Cover } from "@/components/cover";
 import { Toolbar } from "@/components/toolbar";
+import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 
 const TaskPage = () => {
+    const router = useRouter();
+    const user = useCurrentUser();
+    const create = 
     const document = "";
 
     if (document === undefined) {
