@@ -13,7 +13,6 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 const TaskPage = () => {
     const router = useRouter();
     const user = useCurrentUser();
-    const create = 
     const document = "";
 
     if (document === undefined) {
