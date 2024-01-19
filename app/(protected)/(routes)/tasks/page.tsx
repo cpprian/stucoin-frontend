@@ -69,6 +69,7 @@ const TaskPage = () => {
         } else {
             setIsLoading(true);
             fetchStudentTasks();
+            console.log("Student tasks: ", tasks)
         }
     }, [role]);
 
@@ -120,11 +121,11 @@ const TaskPage = () => {
 
     return (
         <div className="h-full flex flex-col items-center justify-center space-y-4">
-            {role === "TEACHER" && isLoading && (
+            {isLoading && (
                 <>
                     <Spinner size="icon" />
                     <h2 className="text-lg font-medium">
-                        Loading your tasks...
+                        Loading tasks...
                     </h2>
                 </>
             )}
