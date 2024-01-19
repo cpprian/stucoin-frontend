@@ -23,11 +23,27 @@ const TaskPage = () => {
     const onCreate = async () => {
         try {
             setLoading(true);
-            const res = await fetchData("tasks", "POST", { title: "Untitiled", owner: user?.id });
-            if (res.status === 200) {
-                router.push(`/tasks/${res.data.id}`);
+            const task = {
+                title: "Untitled",
+                description: "",
+                coverImage: "",
+                points: 0,
+                completed: "INCOMPLETED",
+                owner: user?.id,
+                inCharge: "",
+                files: [],
+                images: [],
+                tags: [],
+            }
+
+            const res = await fetchData("/tasks", "POST", task);
+            if (res?.status === 200) {
+                res.json().then((data) => {
+                    console.log("Data: ", data.insertedID);
+                    router.push(`/tasks/${data.insertedID}`);
+                });
             } else {
-                setError(new Error(res.data));
+                setError(new Error("Something went wrong"));
             }
         } catch (err: any) {
             setError(err);
