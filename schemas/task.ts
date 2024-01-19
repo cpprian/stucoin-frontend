@@ -1,22 +1,21 @@
 import * as z from "zod";
 
 export const TaskSchema = z.object({
-    title: z.string().min(2, {
-        message: "Title must be at least 2 characters",
-    }),
-    description: z.string().min(2, {
-        message: "Description must be at least 2 characters",
-    }),
-    coverImage: z.optional(z.string()),
-    points: z.number().min(0, {
-        message: "Points must be a positive number",
-    }),
-    completed: z.enum(["COMPLETED", "INCOMPLETED", "ABORTED"]),
-    owner: z.string(),
-    inCharge: z.optional(z.string()),
-    files: z.optional(z.array(z.string())),
-    images: z.optional(z.array(z.string())),
-    tags: z.array(z.string()).min(1, {
-        message: "You must have at least one tag",
-    }),
+    Title: z.string(),
+    Description: z.string(),
+    CoverImage: z.optional(z.string()),
+    Points: z.number(),
+    Completed: z.enum(["COMPLETED", "INCOMPLETED", "ABORTED", "ACCEPTED"]),
+    Owner: z.string(),
+    InCharge: z.optional(z.string()),
+    Files: z.optional(z.array(z.string())),
+    Images: z.optional(z.array(z.string())),
+    Tags: z.array(z.string()),
 })
+
+// extend the schema to include the id
+export const TaskSchemaId = TaskSchema.extend({
+    ID: z.string(),
+});
+
+export type Task = z.infer<typeof TaskSchemaId>;

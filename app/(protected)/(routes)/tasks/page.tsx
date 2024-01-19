@@ -4,15 +4,16 @@ import { useRouter } from "next/navigation";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useCurrentRole } from "@/hooks/use-current-role";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, PlusCircle, Terminal } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import Image from "next/image";
-import { useData } from "@/hooks/use-data";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/spinner";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { fetchData } from "@/actions/api";
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast";
+import { useData } from "@/hooks/use-data";
+import { convertTaskList } from "@/actions/tasks";
+import { Task } from "@/schemas/task";
 
 
 const TaskPage = () => {
@@ -21,6 +22,34 @@ const TaskPage = () => {
     const role = useCurrentRole();
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
+
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [error, setError] = useState<number | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const fetchTeacherTasks = async () => {
+        try {
+            const res = await fetchData(`/tasks/teacher/${user?.id}`, "GET", {});
+            if (res?.status === 200) {
+                const data = await res.json();
+                setTasks(convertTaskList(data));
+                console.log("Teacher tasks: ", data);
+            } else {
+                setError(res?.status);
+            }
+        } catch (err) {
+            setError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (role === "TEACHER") {
+            setIsLoading(true);
+            fetchTeacherTasks();
+        }
+    }, [role]);
 
     const onCreate = async () => {
         try {
@@ -70,7 +99,22 @@ const TaskPage = () => {
 
     return (
         <div className="h-full flex flex-col items-center justify-center space-y-4">
-            {role === "TEACHER" && (
+            {role === "TEACHER" && isLoading && (
+                <>
+                    <Spinner size="icon" />
+                    <h2 className="text-lg font-medium">
+                        Loading your tasks...
+                    </h2>
+                </>
+            )}
+            {role === "TEACHER" && !isLoading && (
+                <ul>
+                    {tasks.map(task => (
+                        <li key={task.ID}>{task.ID}</li>
+                    ))}
+                </ul>
+            )}
+            {role === "TEACHER" && tasks.length === 0 && (
                 <>
                     <Image
                         src="/empty.png"
