@@ -3,7 +3,6 @@ import { TaskSchemaId } from "@/schemas/task";
 
 export const convertTaskData = (rawData: object) => {
     try {
-        console.log("rawData", rawData);
         const validatedData = TaskSchemaId.parse(rawData);
         return validatedData;
     } catch (error) {

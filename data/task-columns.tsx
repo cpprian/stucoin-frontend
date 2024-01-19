@@ -1,20 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { getUserById } from "./user";
-import { useEffect } from "react";
-import { OwnerCell } from "@/components/owner-cell";
-import { useRouter } from "next/navigation";
+import { ArrowUpDown } from "lucide-react";
 import { TitleCell } from "@/components/title-cell";
+import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export type Task = {
     Title: string;
     Description: string;
     Points: number;
-    Completed: "COMPLETED" | "INCOMPLETED" | "ABORTED" | "ACCEPTED";
+    Completed: "COMPLETED" | "INCOMPLETED" | "ABORTED" | "ACCEPTED" | "OPEN";
     Owner: string;
     Tags: string[];
     ID: string;
@@ -25,28 +21,6 @@ export type Task = {
 };
 
 export const taskColumns: ColumnDef<Task>[] = [
-    {
-        id: "ID",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value: any) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value: any) => { row.toggleSelected(!!value); console.log(row.original.ID) }}
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
     {
         accessorKey: "Title",
         header: ({ column }) => {
@@ -68,68 +42,72 @@ export const taskColumns: ColumnDef<Task>[] = [
         header: "Description",
         accessorKey: "Description",
         cell: ({ row }) => (
-          <div className="capitalize">
-            {row.original.Description.length > 50
-              ? `${row.original.Description.substring(0, 50)}...`
-              : row.original.Description
-            }
-          </div>
+            <div className="capitalize">
+                {row.original.Description.length > 30
+                    ? `${row.original.Description.substring(0, 30)}...`
+                    : row.original.Description
+                }
+            </div>
         ),
-      },
+    },
     {
-        header: "Completed",
+        header: ({ column }) => {
+            return (
+                <div>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="none">
+                                Status
+                                <ArrowUpDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="">
+                            <div className="grid gap-4">
+                                {["ACCEPTED", "COMPLETED", "INCOMPLETED", "ABORTED", "OPEN"].map((status) => (
+                                    <div className="grid gap-2">
+                                        <div className="grid grid-cols-3 items-center gap-4">
+                                            <Button 
+                                                variant="none"
+                                                onClick={() => column.getFilterValue() === status ? column.setFilterValue("") : column.setFilterValue(status)}
+                                            >
+                                             {status}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+            );
+        },
         accessorKey: "Completed",
     },
     {
-        header: "Points",
         accessorKey: "Points",
-    },
-    {
-                accessorKey: "Owner",
         header: ({ column }) => {
             return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Email
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
+              <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              >
+                Points
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
             )
-        },
-        cell: ({ row }) => {
-            return (
-                OwnerCell(row.original.Owner)
-            )
-        },
+          },
     },
     {
-        id: "actions",
-        enableHiding: false,
-        cell: ({ row }) => {
-            const payment = row.original
-
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment.ID)}
-                        >
-                            Copy payment ID
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>View payment details</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
-        },
-    },
+        header: "Tags",
+        accessorKey: "Tags",
+        cell: ({ row }) => (
+            <div className="capitalize">
+                {row.original.Tags.length > 0
+                    ? `${row.original.Tags.join(", ")}`
+                    : "No tags"
+                }
+            </div>
+        ),
+    }
 ];
+

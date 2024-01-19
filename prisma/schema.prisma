@@ -27,6 +27,7 @@ model User {
   image         String?
   password      String?
   bio           String?
+  walletAddress String?
   role          Role      @default(STUDENT)
   accounts      Account[]
   student       Student?

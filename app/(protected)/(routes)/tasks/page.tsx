@@ -34,7 +34,6 @@ const TaskPage = () => {
             if (res?.status === 200) {
                 const data = await res.json();
                 setTasks(convertTaskList(data));
-                console.log("Teacher tasks: ", data);
             } else {
                 setError(res?.status);
             }
@@ -81,7 +80,7 @@ const TaskPage = () => {
                 description: "",
                 coverImage: "",
                 points: 0,
-                completed: "INCOMPLETED",
+                completed: "OPEN",
                 owner: user?.id,
                 inCharge: "",
                 files: [],
@@ -92,7 +91,6 @@ const TaskPage = () => {
             const res = await fetchData("/tasks", "POST", task);
             if (res?.status === 200) {
                 res.json().then((data) => {
-                    console.log("Data: ", data.insertedID);
                     toast({
                         title: "Task created",
                         description: "Your task has been created successfully.",

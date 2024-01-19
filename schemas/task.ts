@@ -5,7 +5,7 @@ export const TaskSchema = z.object({
     Description: z.string(),
     CoverImage: z.optional(z.string()),
     Points: z.number(),
-    Completed: z.enum(["COMPLETED", "INCOMPLETED", "ABORTED", "ACCEPTED"]),
+    Completed: z.enum(["COMPLETED", "INCOMPLETED", "ABORTED", "ACCEPTED", "OPEN"]),
     Owner: z.string(),
     InCharge: z.optional(z.string()),
     Files: z.optional(z.array(z.string())),
