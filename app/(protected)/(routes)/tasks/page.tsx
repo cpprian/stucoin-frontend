@@ -11,9 +11,10 @@ import { Spinner } from "@/components/spinner";
 import { fetchData } from "@/actions/api";
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast";
-import { useData } from "@/hooks/use-data";
 import { convertTaskList } from "@/actions/tasks";
 import { Task } from "@/schemas/task";
+import { DataTable } from "@/components/data-table";
+import { taskColumns } from "@/data/task-columns";
 
 
 const TaskPage = () => {
@@ -25,7 +26,7 @@ const TaskPage = () => {
 
     const [tasks, setTasks] = useState<Task[]>([]);
     const [error, setError] = useState<number | undefined>(undefined);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchTeacherTasks = async () => {
         try {
@@ -44,10 +45,30 @@ const TaskPage = () => {
         }
     };
 
+    const fetchStudentTasks = async () => {
+        try {
+            const res = await fetchData(`/tasks`, "GET", {});
+            if (res?.status === 200) {
+                const data = await res.json();
+                setTasks(convertTaskList(data));
+                console.log("All tasks: ", data);
+            } else {
+                setError(res?.status);
+            }
+        } catch (err) {
+            setError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     useEffect(() => {
         if (role === "TEACHER") {
             setIsLoading(true);
             fetchTeacherTasks();
+        } else {
+            setIsLoading(true);
+            fetchStudentTasks();
         }
     }, [role]);
 
@@ -107,14 +128,13 @@ const TaskPage = () => {
                     </h2>
                 </>
             )}
-            {role === "TEACHER" && !isLoading && (
-                <ul>
-                    {tasks.map(task => (
-                        <li key={task.ID}>{task.ID}</li>
-                    ))}
-                </ul>
+            {!isLoading && tasks.length > 0 && (
+                <DataTable 
+                    columns={taskColumns}
+                    data={tasks}
+                />
             )}
-            {role === "TEACHER" && tasks.length === 0 && (
+            {role === "TEACHER" && !isLoading && tasks.length === 0 && (
                 <>
                     <Image
                         src="/empty.png"
