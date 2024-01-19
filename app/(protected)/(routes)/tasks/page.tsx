@@ -4,20 +4,22 @@ import { useRouter } from "next/navigation";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useCurrentRole } from "@/hooks/use-current-role";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { AlertCircle, PlusCircle, Terminal } from "lucide-react";
 import Image from "next/image";
 import { useData } from "@/hooks/use-data";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/spinner";
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { fetchData } from "@/actions/api";
+import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from "@/components/ui/toast";
 
 
 const TaskPage = () => {
     const router = useRouter();
     const user = useCurrentUser();
     const role = useCurrentRole();
-    const [error, setError] = useState<Error | null>(null);
+    const { toast } = useToast();
     const [loading, setLoading] = useState(false);
 
     const onCreate = async () => {
@@ -40,13 +42,27 @@ const TaskPage = () => {
             if (res?.status === 200) {
                 res.json().then((data) => {
                     console.log("Data: ", data.insertedID);
+                    toast({
+                        title: "Task created",
+                        description: "Your task has been created successfully.",
+                    });
                     router.push(`/tasks/${data.insertedID}`);
                 });
             } else {
-                setError(new Error("Something went wrong"));
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong",
+                    description: "There was an error creating a new task. Please try again later.",
+                    action: <ToastAction altText="Try again">Try again</ToastAction>
+                });
             }
         } catch (err: any) {
-            setError(err);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong",
+                description: "There was an error creating a new task. Please try again later.",
+                action: <ToastAction altText="Try again">Try again</ToastAction>
+            });
         } finally {
             setLoading(false);
         }
@@ -73,11 +89,6 @@ const TaskPage = () => {
                     )}
                     {loading && (
                         <Spinner size="lg" />
-                    )}
-                    {error && (
-                        <Alert>
-                            {error.message}
-                        </Alert>
                     )}
                 </>
             )}
