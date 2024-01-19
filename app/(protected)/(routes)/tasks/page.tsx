@@ -1,46 +1,70 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useMemo } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import Editor from "@/components/editor";
-import { Cover } from "@/components/cover";
-import { Toolbar } from "@/components/toolbar";
 import { useRouter } from "next/navigation";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useCurrentRole } from "@/hooks/use-current-role";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import Image from "next/image";
+import { useData } from "@/hooks/use-data";
+import { useEffect, useState } from "react";
+import { Spinner } from "@/components/spinner";
+import { Alert } from "@/components/ui/alert";
+import { fetchData } from "@/actions/api";
 
 
 const TaskPage = () => {
     const router = useRouter();
     const user = useCurrentUser();
-    const document = "";
+    const role = useCurrentRole();
+    const [error, setError] = useState<Error | null>(null);
+    const [loading, setLoading] = useState(false);
 
-    if (document === undefined) {
-        return (
-            <div>
-                <Cover.Skeleton />
-                <div className="md:max-w-3xl lg:max-w-4xl mx-auto mt-10">
-                    <div className="space-y-4 pl-8 pt-4">
-                        <Skeleton className="h-14 w-[50%]" />
-                        <Skeleton className="h-4 w-[80%]" />
-                        <Skeleton className="h-4 w-[40%]" />
-                        <Skeleton className="h-4 w-[60%]" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    const onCreate = async () => {
+        try {
+            setLoading(true);
+            const res = await fetchData("tasks", "POST", { title: "Untitiled", owner: user?.id });
+            if (res.status === 200) {
+                router.push(`/tasks/${res.data.id}`);
+            } else {
+                setError(new Error(res.data));
+            }
+        } catch (err: any) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <div className="pb-40">
-            <Cover url={"/#"} preview={false} />
-            <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-                <Toolbar initialData={document} />
-                <Editor
-                    onChange={() => { }}
-                    initialContent={document}
-                />
-            </div>
+        <div className="h-full flex flex-col items-center justify-center space-y-4">
+            {role === "TEACHER" && (
+                <>
+                    <Image
+                        src="/empty.png"
+                        height="500"
+                        width="500"
+                        alt="Empty"
+                    />
+                    <h2 className="text-lg font-medium">
+                        Oh no! You don't have any tasks yet. Create one now!
+                    </h2>
+                    {!loading && (
+                        <Button onClick={onCreate}>
+                            <PlusCircle className="h-4 w-4 mr-2" />
+                            Create a new task
+                        </Button>
+                    )}
+                    {loading && (
+                        <Spinner size="lg" />
+                    )}
+                    {error && (
+                        <Alert>
+                            {error.message}
+                        </Alert>
+                    )}
+                </>
+            )}
         </div>
     );
 }

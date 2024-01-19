@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchData } from "@/actions/api";
 
-const useData = (path: string, method: string, body: string) => {
+export const useData = (path: string, method: string, body: string) => {
     const [data, setData] = useState(null);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState(false);
