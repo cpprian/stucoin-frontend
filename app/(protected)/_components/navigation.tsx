@@ -152,20 +152,9 @@ export const Navigation = () => {
                 <div>
                     <UserButton />
                     <Item
-                        label="Search"
-                        icon={Search}
-                        isSearch
-                        onClick={search.onOpen}
-                    />
-                    <Item
                         label="See more tasks"
                         icon={FileText}
                         onClick={tasks.onOpen}
-                    />
-                    <Item
-                        label="My micro-competencies"
-                        icon={PaperclipIcon}
-                        onClick={microCompetencies.onOpen}
                     />
                     <Item
                         label="Rewards"

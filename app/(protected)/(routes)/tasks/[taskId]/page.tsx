@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useCoverImage } from "@/hooks/use-cover-image";
 import { useCurrentRole } from "@/hooks/use-current-role";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { Badge } from "@/components/ui/badge";
 
 interface TaskIdPageProps {
     params: {
@@ -111,13 +112,13 @@ const TaskIdPage = ({
 
     return (
         <div className="pb-40">
-            <Cover url={data.CoverImage} data={data} />
+            <Cover url={data.CoverImage} data={data} currentUser={user.id}/>
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-                <Toolbar initialData={data} contributors={{ owner: data.Owner, inCharge: data.InCharge ?? "" }} />
+                <Toolbar initialData={data} currentUser={user.id} />
                 <Editor
                     onChange={onChange}
                     initialContent={data.Description}
-                    editable={role === "TEACHER"}
+                    editable={data.Owner === user.id}
                 />
                 <div className="space-y-4 pl-8 pt-4">
                     <h2 className="text-3xl font-bold">
@@ -159,7 +160,7 @@ const TaskIdPage = ({
                                 );
                             }}
                         />
-                    ): (<></>)}
+                    ) : (<></>)}
                 </div>
                 <div className="p-10">
                     {data.Files?.map((file) => (
@@ -207,6 +208,71 @@ const TaskIdPage = ({
                             )}
                         </div>
                     ))}
+                </div>
+                <div className="space-y-4 pl-8 pt-4">
+                    <h2 className="text-3xl font-bold">
+                        Contributors
+                    </h2>
+                    <div className="flex flex-col gap-2 text-gray-500 dark:text-white py-1">
+                        <div className="justify-between flex">
+                            <div className="min-w-0 text-sm">
+                                <div className="overflow-hidden overflow-ellipsis whitespace-nowrap pb-2">
+                                    {user.email}
+                                </div>
+                                <div className="text-xs text-gray-400 dark:text-gray-400">
+                                    <Badge variant="outline">Teacher</Badge>
+                                </div>
+                            </div>
+                            <div className="grow" />
+                            <div className="flex w-12 justify-end text-xs">
+                                <Button
+                                    onClick={() => {
+                                        router.push(`/profile/${data.Owner}`);
+                                    }}
+                                >
+                                    View
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="grow border-b border-gray-300 dark:border-gray-700" />
+                        {data.InCharge ? (
+                            <>
+                                <div className="justify-between flex">
+                                    <div className="min-w-0 text-sm">
+                                        <div className="overflow-hidden overflow-ellipsis whitespace-nowrap pb-2">
+                                            {data.Owner}
+                                        </div>
+                                        <div className="text-xs text-gray-400 dark:text-gray-400">
+                                            <Badge variant="outline">Student</Badge>
+                                        </div>
+                                    </div>
+                                    <div className="flex w-12 justify-end text-xs">
+                                        <Button
+                                            onClick={() => {
+                                                router.push(`/profile/${data.Owner}`);
+                                            }}
+                                        >
+                                            View
+                                        </Button>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (<></>)}
+                        {data.Completed === "OPEN" && role === "STUDENT" && (
+                            <div className="py-4">
+                                <Button
+                                    onClick={() => {
+                                        fetchData(`/tasks/assign/${params.taskId}`, "PUT", {
+                                            student: user.id,
+                                        });
+                                        setUpdateDataFlag(!updateDataFlag);
+                                    }}
+                                >
+                                    Assign to me
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

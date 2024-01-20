@@ -16,14 +16,14 @@ interface CoverImageProps {
     url?: string;
     data: Task;
     preview?: boolean;
-    contributors?: { owner: string, inCharge: string};
+    currentUser?: string;
 }
 
 export const Cover = ({
     url,
     data, 
     preview,
-    contributors,
+    currentUser,
 }: CoverImageProps) => {
     const { edgestore } = useEdgeStore();
     const params = useParams();
@@ -56,7 +56,7 @@ export const Cover = ({
                     className="object-cover"
                 />
             )}
-            {url && !preview && data.Owner === contributors?.owner && (
+            {url && !preview && data.Owner === currentUser && (
                 <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
                     <Button
                         onClick={() => coverImage.onReplace(url)}

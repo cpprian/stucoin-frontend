@@ -6,15 +6,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 export type Task = {
     Title: string;
-    Description: string;
     Points: number;
     Completed: "COMPLETED" | "INCOMPLETED" | "ABORTED" | "ACCEPTED" | "OPEN";
-    Owner: string;
-    Tags: string[];
     ID: string;
-    CoverImage?: string | undefined;
-    InCharge?: string | undefined;
-    Files?: File[] | undefined;
+    OwnerEmail: string;
 };
 
 type File = {
@@ -40,6 +35,20 @@ export const taskColumns: ColumnDef<Task>[] = [
         cell: ({ row }) => (
             TitleCell(row.original.Title, row.original.ID)
         ),
+    },
+    {
+        accessorKey: "OwnerEmail",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Teacher
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
     },
     {
         header: ({ column }) => {
@@ -88,17 +97,5 @@ export const taskColumns: ColumnDef<Task>[] = [
             )
           },
     },
-    {
-        header: "Tags",
-        accessorKey: "Tags",
-        cell: ({ row }) => (
-            <div className="capitalize">
-                {row.original.Tags.length > 0
-                    ? `${row.original.Tags.join(", ")}`
-                    : "No tags"
-                }
-            </div>
-        ),
-    }
 ];
 
