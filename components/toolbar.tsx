@@ -5,9 +5,11 @@ import { ElementRef, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { ImageIcon } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
+import { Task } from "@/schemas/task";
+import { useData } from "@/hooks/use-data";
 
 interface ToolbarProps {
-    initialData: String;
+    initialData: Task;
     preview?: boolean;
 };
 
@@ -17,10 +19,11 @@ export const Toolbar = ({
 }: ToolbarProps) => {
     const inputRef = useRef<ElementRef<"textarea">>(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState(initialData.Title);
     
-    const update = () => {};
-    const removeIcon = () => {};
+    const update = (body: object) => {
+        useData(`/tasks/${initialData.ID}`, "PUT", body)
+    };
 
     const coverImage = useCoverImage();
 
@@ -29,7 +32,7 @@ export const Toolbar = ({
 
         setIsEditing(true);
         setTimeout(() => {
-            setValue("hello");
+            setValue(initialData.Title);
             inputRef.current?.focus();
         }, 0);
     };
@@ -38,7 +41,18 @@ export const Toolbar = ({
 
     const onInput = (value: string) => {
         setValue(value);
-        update();
+        update({
+            title: value || "Untitled",
+            description: initialData.Description,
+            coverImage: coverImage,
+            points: initialData.Points,
+            completed: initialData.Completed,
+            owner: initialData.Owner,
+            inCharge: initialData.InCharge,
+            files: initialData.Files,
+            images: initialData.Images,
+            tags: initialData.Tags,
+        });
     };
 
     const onKeyDown = (
@@ -50,14 +64,6 @@ export const Toolbar = ({
         }
     };
 
-    const onIconSelect = (icon: string) => {
-        update();
-    };
-
-    const onRemoveIcon = () => {
-        removeIcon();
-    };
-
     return (
         <div className="pl-[54px] group relative">
             <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-4">
@@ -66,6 +72,7 @@ export const Toolbar = ({
                         className="text-muted-foreground text-xs"
                         variant="outline"
                         size="sm"
+                        onClick={coverImage.onOpen}
                     >
                         <ImageIcon className="h-4 w-4 mr-2" />
                         Add cover
@@ -86,7 +93,7 @@ export const Toolbar = ({
                     onClick={enableInput}
                     className="pb-[11.5px] text-5xl font-bold break-words outline-none text-[#3F3F3F] dark:text-[#CFCFCF]"
                 >
-                    {initialData || "Untitled"}
+                    {initialData.Title || "Untitled"}
                 </div>
             )}
         </div>
