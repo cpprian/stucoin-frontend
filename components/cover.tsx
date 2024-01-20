@@ -10,17 +10,20 @@ import { Button } from "./ui/button";
 import { ImageIcon, X } from "lucide-react";
 import { fetchData } from "@/actions/api";
 import { Task } from "@/schemas/task";
+import { User } from "next-auth";
 
 interface CoverImageProps {
     url?: string;
     data: Task;
     preview?: boolean;
+    contributors?: { owner: string, inCharge: string};
 }
 
 export const Cover = ({
     url,
     data, 
     preview,
+    contributors,
 }: CoverImageProps) => {
     const { edgestore } = useEdgeStore();
     const params = useParams();
@@ -33,21 +36,11 @@ export const Cover = ({
             });
         }
         fetchData(`/tasks/cover/${params.taskId}`, "PUT", {
-            id: params.taskId,
             coverImage: ""
         });
 
         data.CoverImage = "";
     };
-
-    const onRemove = async () => {
-        if (url) {
-            await edgestore.publicFiles.delete({
-                url: url
-            })
-        }
-        removeCoverImage();
-    }
 
     return (
         <div className={cn(
@@ -63,7 +56,7 @@ export const Cover = ({
                     className="object-cover"
                 />
             )}
-            {url && !preview && (
+            {url && !preview && data.Owner === contributors?.owner && (
                 <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
                     <Button
                         onClick={() => coverImage.onReplace(url)}
@@ -75,7 +68,7 @@ export const Cover = ({
                         Change cover
                     </Button>
                     <Button
-                        onClick={onRemove}
+                        onClick={removeCoverImage}
                         className="text-muted-foreground text-xs"
                         variant="outline"
                         size="sm"

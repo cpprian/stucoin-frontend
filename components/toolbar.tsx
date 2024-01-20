@@ -1,22 +1,24 @@
 "use client";
 
 import { useCoverImage } from "@/hooks/use-cover-image";
-import { Dispatch, ElementRef, SetStateAction, useRef, useState } from "react";
+import { ElementRef, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { ImageIcon } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Task } from "@/schemas/task";
 import { fetchData } from "@/actions/api";
+import { User } from "@prisma/client";
 
 interface ToolbarProps {
     initialData: Task;
     preview?: boolean;
-    onChange?: Dispatch<SetStateAction<boolean>>;
+    contributors?: { owner: string, inCharge: string};
 };
 
 export const Toolbar = ({
     initialData,
     preview,
+    contributors,
 }: ToolbarProps) => {
     const inputRef = useRef<ElementRef<"textarea">>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -29,7 +31,7 @@ export const Toolbar = ({
     const coverImage = useCoverImage();
 
     const enableInput = () => {
-        if (preview) return;
+        if (preview || initialData.Owner !== contributors?.owner) return;
 
         setIsEditing(true);
         setTimeout(() => {
@@ -59,7 +61,7 @@ export const Toolbar = ({
     return (
         <div className="pl-[54px] group relative">
             <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-4">
-                {!initialData.CoverImage && !preview && (
+                {!initialData.CoverImage && !preview && initialData.ID === contributors?.owner && (
                     <Button
                         onClick={coverImage.onOpen}
                         className="text-muted-foreground text-xs"

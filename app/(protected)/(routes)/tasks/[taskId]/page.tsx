@@ -13,6 +13,8 @@ import { FileIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useCoverImage } from "@/hooks/use-cover-image";
+import { useCurrentRole } from "@/hooks/use-current-role";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface TaskIdPageProps {
     params: {
@@ -30,6 +32,8 @@ const TaskIdPage = ({
     const [fileStates, setFileStates] = useState<FileState[]>([]);
     const { edgestore } = useEdgeStore();
     const router = useRouter();
+    const role = useCurrentRole() ?? "STUDENT";
+    const user = useCurrentUser() || null;
     const coverImage = useCoverImage();
     const [updateDataFlag, setUpdateDataFlag] = useState(false);
 
@@ -94,7 +98,7 @@ const TaskIdPage = ({
         );
     }
 
-    if (data === null) {
+    if (data === null || user === null) {
         return (
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto mt-10">
                 <div className="space-y-4 pl-8 pt-4">
@@ -109,50 +113,53 @@ const TaskIdPage = ({
         <div className="pb-40">
             <Cover url={data.CoverImage} data={data} />
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-                <Toolbar initialData={data} onChange={setUpdateDataFlag} />
+                <Toolbar initialData={data} contributors={{ owner: data.Owner, inCharge: data.InCharge ?? "" }} />
                 <Editor
                     onChange={onChange}
                     initialContent={data.Description}
+                    editable={role === "TEACHER"}
                 />
                 <div className="space-y-4 pl-8 pt-4">
                     <h2 className="text-3xl font-bold">
                         Resources
                     </h2>
-                    <MultiFileDropzone
-                        value={fileStates}
-                        onChange={(files) => {
-                            setFileStates(files);
-                        }}
-                        onFilesAdded={async (addedFiles) => {
-                            setFileStates([...fileStates, ...addedFiles]);
-                            await Promise.all(
-                                addedFiles.map(async (addedFileState) => {
-                                    try {
-                                        const res = await edgestore.publicFiles.upload({
-                                            file: addedFileState.file,
-                                            onProgressChange: async (progress) => {
-                                                updateFileProgress(addedFileState.key, progress);
-                                                if (progress === 100) {
-                                                    // wait 1 second to set it to complete
-                                                    // so that the user can see the progress bar at 100%
-                                                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                                                    updateFileProgress(addedFileState.key, 'COMPLETE');
-                                                }
-                                            },
-                                        });
-                                        addFile({
-                                            path: res.url,
-                                            name: addedFileState.file.name,
-                                            size: addedFileState.file.size,
-                                        });
-                                        setUpdateDataFlag(!updateDataFlag);
-                                    } catch (err) {
-                                        updateFileProgress(addedFileState.key, 'ERROR');
-                                    }
-                                }),
-                            );
-                        }}
-                    />
+                    {data.Owner === user.id || data.InCharge === user.id ? (
+                        <MultiFileDropzone
+                            value={fileStates}
+                            onChange={(files) => {
+                                setFileStates(files);
+                            }}
+                            onFilesAdded={async (addedFiles) => {
+                                setFileStates([...fileStates, ...addedFiles]);
+                                await Promise.all(
+                                    addedFiles.map(async (addedFileState) => {
+                                        try {
+                                            const res = await edgestore.publicFiles.upload({
+                                                file: addedFileState.file,
+                                                onProgressChange: async (progress) => {
+                                                    updateFileProgress(addedFileState.key, progress);
+                                                    if (progress === 100) {
+                                                        // wait 1 second to set it to complete
+                                                        // so that the user can see the progress bar at 100%
+                                                        await new Promise((resolve) => setTimeout(resolve, 1000));
+                                                        updateFileProgress(addedFileState.key, 'COMPLETE');
+                                                    }
+                                                },
+                                            });
+                                            addFile({
+                                                path: res.url,
+                                                name: addedFileState.file.name,
+                                                size: addedFileState.file.size,
+                                            });
+                                            setUpdateDataFlag(!updateDataFlag);
+                                        } catch (err) {
+                                            updateFileProgress(addedFileState.key, 'ERROR');
+                                        }
+                                    }),
+                                );
+                            }}
+                        />
+                    ): (<></>)}
                 </div>
                 <div className="p-10">
                     {data.Files?.map((file) => (
@@ -173,27 +180,31 @@ const TaskIdPage = ({
                                 </div>
                             </div>
                             <div className="grow" />
-                            <div className="flex w-12 justify-end text-xs">
-                                <Button
-                                    onClick={() => {
-                                        deleteFile({
-                                            path: file.Path,
-                                            name: file.Name,
-                                            size: file.Size,
-                                        })
+                            {data.Owner == user.id || data.InCharge == user.id ? (
+                                <div className="flex w-12 justify-end text-xs">
+                                    <Button
+                                        onClick={() => {
+                                            deleteFile({
+                                                path: file.Path,
+                                                name: file.Name,
+                                                size: file.Size,
+                                            })
 
-                                        // delete from array
-                                        const index = data.Files?.findIndex((f) => f.Path === file.Path);
-                                        console.log(index);
-                                        if (index !== undefined && index !== -1 && data.Files) {
-                                            data.Files.splice(index, 1);
-                                            setUpdateDataFlag(!updateDataFlag);
-                                        }
-                                    }}
-                                >
-                                    <Trash2Icon className="shrink-0 dark:text-gray-400" />
-                                </Button>
-                            </div>
+                                            // delete from array
+                                            const index = data.Files?.findIndex((f) => f.Path === file.Path);
+                                            console.log(index);
+                                            if (index !== undefined && index !== -1 && data.Files) {
+                                                data.Files.splice(index, 1);
+                                                setUpdateDataFlag(!updateDataFlag);
+                                            }
+                                        }}
+                                    >
+                                        <Trash2Icon className="shrink-0 dark:text-gray-400" />
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="w-12" />
+                            )}
                         </div>
                     ))}
                 </div>
