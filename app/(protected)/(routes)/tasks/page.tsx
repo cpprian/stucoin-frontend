@@ -84,7 +84,6 @@ const TaskPage = () => {
                 owner: user?.id,
                 inCharge: "",
                 files: [],
-                images: [],
                 tags: [],
             }
 

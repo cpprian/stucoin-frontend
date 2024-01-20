@@ -36,6 +36,8 @@ export const Cover = ({
             id: params.taskId,
             coverImage: ""
         });
+
+        data.CoverImage = "";
     };
 
     const onRemove = async () => {

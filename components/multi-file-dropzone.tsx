@@ -129,7 +129,7 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
             }
             return undefined;
         }, [fileRejections, dropzoneOptions]);
-
+        
         return (
             <div>
                 <div className="flex flex-col gap-2">
@@ -230,4 +230,4 @@ function formatFileSize(bytes?: number) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
-export { MultiFileDropzone };
+export { MultiFileDropzone, formatFileSize };

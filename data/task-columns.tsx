@@ -14,9 +14,14 @@ export type Task = {
     ID: string;
     CoverImage?: string | undefined;
     InCharge?: string | undefined;
-    Files?: string[] | undefined;
-    Images?: string[] | undefined;
+    Files?: File[] | undefined;
 };
+
+type File = {
+    Name: string;
+    Path: string;
+    Size: number;
+}
 
 export const taskColumns: ColumnDef<Task>[] = [
     {

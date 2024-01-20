@@ -8,7 +8,11 @@ import dynamic from "next/dynamic";
 import { Task } from "@/schemas/task";
 import { fetchData } from "@/actions/api";
 import { useEdgeStore } from '@/lib/edgestore';
-import { FileState, MultiFileDropzone } from "@/components/multi-file-dropzone";
+import { FileState, MultiFileDropzone, formatFileSize } from "@/components/multi-file-dropzone";
+import { FileIcon, Trash2Icon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getDownloadUrl } from '@edgestore/react/utils';
+import { useRouter } from "next/navigation";
 
 interface TaskIdPageProps {
     params: {
@@ -25,11 +29,20 @@ const TaskIdPage = ({
     const [loading, setLoading] = useState(true);
     const [fileStates, setFileStates] = useState<FileState[]>([]);
     const { edgestore } = useEdgeStore();
+    const router = useRouter();
 
     const onChange = (content: string) => {
         fetchData(`/tasks/content/${params.taskId}`, "PUT", {
             content: content,
         });
+    }
+
+    const addFile = (body: object) => {
+        fetchData(`/tasks/files/${params.taskId}`, "POST", body);
+    }
+
+    const deleteFile = (body: object) => {
+        fetchData(`/tasks/files/${params.taskId}`, "DELETE", body)
     }
 
     useEffect(() => {
@@ -125,6 +138,11 @@ const TaskIdPage = ({
                                                 }
                                             },
                                         });
+                                        addFile({
+                                            path: res.url,
+                                            name: addedFileState.file.name,
+                                            size: addedFileState.file.size,
+                                        });
                                         console.log(res);
                                     } catch (err) {
                                         updateFileProgress(addedFileState.key, 'ERROR');
@@ -133,6 +151,41 @@ const TaskIdPage = ({
                             );
                         }}
                     />
+                </div>
+                <div className="p-10">
+                    {data.Files?.map((file) => (
+                        <div className="flex items-center gap-2 text-gray-500 dark:text-white py-1">
+                            <Button
+                                onClick={() => {
+                                    router.push(file.Path);
+                                }}
+                            >
+                                <FileIcon size="30" className="shrink-0" />
+                            </Button>
+                            <div className="min-w-0 text-sm">
+                                <div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+                                    {file.Name}
+                                </div>
+                                <div className="text-xs text-gray-400 dark:text-gray-400">
+                                    {formatFileSize(file.Size)}
+                                </div>
+                            </div>
+                            <div className="grow" />
+                            <div className="flex w-12 justify-end text-xs">
+                                <Button
+                                    onClick={() => {
+                                        deleteFile({
+                                            path: file.Path,
+                                            name: file.Name,
+                                            size: file.Size,
+                                        })
+                                    }}
+                                >
+                                    <Trash2Icon className="shrink-0 dark:text-gray-400" />
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
