@@ -7,13 +7,14 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { Task } from "@/schemas/task";
 import { fetchData } from "@/actions/api";
+import { useEdgeStore } from '@/lib/edgestore';
+import { FileState, MultiFileDropzone } from "@/components/multi-file-dropzone";
 
 interface TaskIdPageProps {
     params: {
         taskId: string;
     };
 };
-
 
 const TaskIdPage = ({
     params
@@ -22,6 +23,8 @@ const TaskIdPage = ({
     const [data, setData] = useState<Task | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState(true);
+    const [fileStates, setFileStates] = useState<FileState[]>([]);
+    const { edgestore } = useEdgeStore();
 
     const onChange = (content: string) => {
         fetchData(`/tasks/content/${params.taskId}`, "PUT", {
@@ -46,6 +49,19 @@ const TaskIdPage = ({
             }
         })();
     }, []);
+
+    function updateFileProgress(key: string, progress: FileState['progress']) {
+        setFileStates((fileStates) => {
+            const newFileStates = structuredClone(fileStates);
+            const fileState = newFileStates.find(
+                (fileState) => fileState.key === key,
+            );
+            if (fileState) {
+                fileState.progress = progress;
+            }
+            return newFileStates;
+        });
+    }
 
     if (data === undefined || loading) {
         return (
@@ -83,6 +99,41 @@ const TaskIdPage = ({
                     onChange={onChange}
                     initialContent={data.Description}
                 />
+                <div className="space-y-4 pl-8 pt-4">
+                    <h2 className="text-3xl font-bold">
+                        Resources
+                    </h2>
+                    <MultiFileDropzone
+                        value={fileStates}
+                        onChange={(files) => {
+                            setFileStates(files);
+                        }}
+                        onFilesAdded={async (addedFiles) => {
+                            setFileStates([...fileStates, ...addedFiles]);
+                            await Promise.all(
+                                addedFiles.map(async (addedFileState) => {
+                                    try {
+                                        const res = await edgestore.publicFiles.upload({
+                                            file: addedFileState.file,
+                                            onProgressChange: async (progress) => {
+                                                updateFileProgress(addedFileState.key, progress);
+                                                if (progress === 100) {
+                                                    // wait 1 second to set it to complete
+                                                    // so that the user can see the progress bar at 100%
+                                                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                                                    updateFileProgress(addedFileState.key, 'COMPLETE');
+                                                }
+                                            },
+                                        });
+                                        console.log(res);
+                                    } catch (err) {
+                                        updateFileProgress(addedFileState.key, 'ERROR');
+                                    }
+                                }),
+                            );
+                        }}
+                    />
+                </div>
             </div>
         </div>
     );
