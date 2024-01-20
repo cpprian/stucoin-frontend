@@ -24,6 +24,21 @@ const TaskIdPage = ({
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const onChange = (content: string) => {
+        useData(`/tasks/${params.taskId}`, "PUT", {
+            title: data?.Title || "Untitled",
+            description: content,
+            coverImage: data?.CoverImage,
+            points: data?.Points,
+            completed: data?.Completed,
+            owner: data?.Owner,
+            inCharge: data?.InCharge,
+            files: data?.Files,
+            images: data?.Images,
+            tags: data?.Tags,
+        });
+    }
+
     useEffect(() => {
         (async () => {
             try {
@@ -71,12 +86,12 @@ const TaskIdPage = ({
 
     return (
         <div className="pb-40">
-            <Cover url={"/#"} preview={false} />
+            <Cover url={data.CoverImage} data={data} />
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
                 <Toolbar initialData={data} />
                 <Editor
-                    onChange={() => { }}
-                    initialContent={document}
+                    onChange={onChange}
+                    initialContent={data.Description}
                 />
             </div>
         </div>

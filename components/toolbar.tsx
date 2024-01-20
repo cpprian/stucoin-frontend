@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { ImageIcon } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Task } from "@/schemas/task";
-import { useData } from "@/hooks/use-data";
+import { fetchData } from "@/actions/api";
 
 interface ToolbarProps {
     initialData: Task;
@@ -22,7 +22,7 @@ export const Toolbar = ({
     const [value, setValue] = useState(initialData.Title);
     
     const update = (body: object) => {
-        useData(`/tasks/${initialData.ID}`, "PUT", body)
+        fetchData(`/tasks/${initialData.ID}`, "PUT", body);
     };
 
     const coverImage = useCoverImage();
@@ -42,7 +42,8 @@ export const Toolbar = ({
     const onInput = (value: string) => {
         setValue(value);
         update({
-            title: value || "Untitled",
+            id: initialData.ID,
+            title: value,
             description: initialData.Description,
             coverImage: coverImage,
             points: initialData.Points,
@@ -93,7 +94,7 @@ export const Toolbar = ({
                     onClick={enableInput}
                     className="pb-[11.5px] text-5xl font-bold break-words outline-none text-[#3F3F3F] dark:text-[#CFCFCF]"
                 >
-                    {initialData.Title || "Untitled"}
+                    {value}
                 </div>
             )}
         </div>
