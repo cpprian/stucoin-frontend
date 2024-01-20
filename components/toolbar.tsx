@@ -1,7 +1,7 @@
 "use client";
 
 import { useCoverImage } from "@/hooks/use-cover-image";
-import { ElementRef, useRef, useState } from "react";
+import { Dispatch, ElementRef, SetStateAction, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { ImageIcon } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
@@ -11,6 +11,7 @@ import { fetchData } from "@/actions/api";
 interface ToolbarProps {
     initialData: Task;
     preview?: boolean;
+    onChange?: Dispatch<SetStateAction<boolean>>;
 };
 
 export const Toolbar = ({

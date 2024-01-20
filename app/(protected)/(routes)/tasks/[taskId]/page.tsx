@@ -11,8 +11,8 @@ import { useEdgeStore } from '@/lib/edgestore';
 import { FileState, MultiFileDropzone, formatFileSize } from "@/components/multi-file-dropzone";
 import { FileIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getDownloadUrl } from '@edgestore/react/utils';
 import { useRouter } from "next/navigation";
+import { useCoverImage } from "@/hooks/use-cover-image";
 
 interface TaskIdPageProps {
     params: {
@@ -30,7 +30,8 @@ const TaskIdPage = ({
     const [fileStates, setFileStates] = useState<FileState[]>([]);
     const { edgestore } = useEdgeStore();
     const router = useRouter();
-    const [updateFiles, setUpdateFiles] = useState(false);
+    const coverImage = useCoverImage();
+    const [updateDataFlag, setUpdateDataFlag] = useState(false);
 
     const onChange = (content: string) => {
         fetchData(`/tasks/content/${params.taskId}`, "PUT", {
@@ -62,7 +63,7 @@ const TaskIdPage = ({
                 setLoading(false);
             }
         })();
-    }, [updateFiles]);
+    }, [updateDataFlag, coverImage.url]);
 
     function updateFileProgress(key: string, progress: FileState['progress']) {
         setFileStates((fileStates) => {
@@ -108,7 +109,7 @@ const TaskIdPage = ({
         <div className="pb-40">
             <Cover url={data.CoverImage} data={data} />
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-                <Toolbar initialData={data} />
+                <Toolbar initialData={data} onChange={setUpdateDataFlag} />
                 <Editor
                     onChange={onChange}
                     initialContent={data.Description}
@@ -144,7 +145,7 @@ const TaskIdPage = ({
                                             name: addedFileState.file.name,
                                             size: addedFileState.file.size,
                                         });
-                                        setUpdateFiles(!updateFiles);
+                                        setUpdateDataFlag(!updateDataFlag);
                                     } catch (err) {
                                         updateFileProgress(addedFileState.key, 'ERROR');
                                     }
@@ -186,7 +187,7 @@ const TaskIdPage = ({
                                         console.log(index);
                                         if (index !== undefined && index !== -1 && data.Files) {
                                             data.Files.splice(index, 1);
-                                            setUpdateFiles(!updateFiles);
+                                            setUpdateDataFlag(!updateDataFlag);
                                         }
                                     }}
                                 >
