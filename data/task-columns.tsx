@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { TitleCell } from "@/components/title-cell";
-import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export type Task = {
@@ -36,18 +34,6 @@ export const taskColumns: ColumnDef<Task>[] = [
         },
         cell: ({ row }) => (
             TitleCell(row.original.Title, row.original.ID)
-        ),
-    },
-    {
-        header: "Description",
-        accessorKey: "Description",
-        cell: ({ row }) => (
-            <div className="capitalize">
-                {row.original.Description.length > 30
-                    ? `${row.original.Description.substring(0, 30)}...`
-                    : row.original.Description
-                }
-            </div>
         ),
     },
     {
