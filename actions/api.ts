@@ -5,9 +5,6 @@ export const fetchData = async (path: string, method: string, body: object) => {
         if (method === "GET") {
             const response = await fetch(API_BASE_URL + path, {
                 method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
             });
 
             return await response;

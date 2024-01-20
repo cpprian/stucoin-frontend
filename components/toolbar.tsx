@@ -5,9 +5,11 @@ import { ElementRef, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { ImageIcon } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
+import { Task } from "@/schemas/task";
+import { fetchData } from "@/actions/api";
 
 interface ToolbarProps {
-    initialData: String;
+    initialData: Task;
     preview?: boolean;
 };
 
@@ -17,10 +19,11 @@ export const Toolbar = ({
 }: ToolbarProps) => {
     const inputRef = useRef<ElementRef<"textarea">>(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [value, setValue] = useState("");
-    
-    const update = () => {};
-    const removeIcon = () => {};
+    const [value, setValue] = useState(initialData.Title);
+
+    const update = (body: object) => {
+        fetchData(`/tasks/title/${initialData.ID}`, "PUT", body);
+    };
 
     const coverImage = useCoverImage();
 
@@ -29,7 +32,7 @@ export const Toolbar = ({
 
         setIsEditing(true);
         setTimeout(() => {
-            setValue("hello");
+            setValue(initialData.Title);
             inputRef.current?.focus();
         }, 0);
     };
@@ -38,7 +41,9 @@ export const Toolbar = ({
 
     const onInput = (value: string) => {
         setValue(value);
-        update();
+        update({
+            title: value,
+        });
     };
 
     const onKeyDown = (
@@ -50,19 +55,12 @@ export const Toolbar = ({
         }
     };
 
-    const onIconSelect = (icon: string) => {
-        update();
-    };
-
-    const onRemoveIcon = () => {
-        removeIcon();
-    };
-
     return (
         <div className="pl-[54px] group relative">
             <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-4">
-                {!!initialData && !preview && (
+                {!initialData.CoverImage && !preview && (
                     <Button
+                        onClick={coverImage.onOpen}
                         className="text-muted-foreground text-xs"
                         variant="outline"
                         size="sm"
@@ -86,7 +84,7 @@ export const Toolbar = ({
                     onClick={enableInput}
                     className="pb-[11.5px] text-5xl font-bold break-words outline-none text-[#3F3F3F] dark:text-[#CFCFCF]"
                 >
-                    {initialData || "Untitled"}
+                    {value}
                 </div>
             )}
         </div>

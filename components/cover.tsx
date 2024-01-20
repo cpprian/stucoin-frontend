@@ -8,21 +8,35 @@ import { useEdgeStore } from "@/lib/edgestore";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { ImageIcon, X } from "lucide-react";
+import { fetchData } from "@/actions/api";
+import { Task } from "@/schemas/task";
 
 interface CoverImageProps {
     url?: string;
-    preview: boolean;
+    data: Task;
+    preview?: boolean;
 }
 
 export const Cover = ({
     url,
+    data, 
     preview,
 }: CoverImageProps) => {
     const { edgestore } = useEdgeStore();
     const params = useParams();
     const coverImage = useCoverImage();
-    // TODO: Implement cover image
-    const removeCoverImage = () => {};
+
+    const removeCoverImage = async () => {
+        if (url) {
+            await edgestore.publicFiles.delete({
+                url: url
+            });
+        }
+        fetchData(`/tasks/cover/${params.taskId}`, "PUT", {
+            id: params.taskId,
+            coverImage: ""
+        });
+    };
 
     const onRemove = async () => {
         if (url) {
