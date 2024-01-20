@@ -30,7 +30,7 @@ export const apiAuthPrefix = "/api/auth";
  * The default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/home";
+export const DEFAULT_LOGIN_REDIRECT = "/tasks";
 
 export const API_BASE_URL = "http://localhost:8000";
 export const API_TASK_URL = "tasks";

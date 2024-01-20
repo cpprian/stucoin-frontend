@@ -249,7 +249,7 @@ const TaskIdPage = ({
                                     <div className="flex w-12 justify-end text-xs">
                                         <Button
                                             onClick={() => {
-                                                router.push(`/profile/${data.Owner}`);
+                                                router.push(`/profile/${data.InCharge}`);
                                             }}
                                         >
                                             View
