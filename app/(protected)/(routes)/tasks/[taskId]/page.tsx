@@ -5,7 +5,6 @@ import { Cover } from "@/components/cover";
 import { Toolbar } from "@/components/toolbar";
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { useData } from "@/hooks/use-data";
 import { Task } from "@/schemas/task";
 import { fetchData } from "@/actions/api";
 
@@ -25,17 +24,8 @@ const TaskIdPage = ({
     const [loading, setLoading] = useState(true);
 
     const onChange = (content: string) => {
-        useData(`/tasks/${params.taskId}`, "PUT", {
-            title: data?.Title || "Untitled",
-            description: content,
-            coverImage: data?.CoverImage,
-            points: data?.Points,
-            completed: data?.Completed,
-            owner: data?.Owner,
-            inCharge: data?.InCharge,
-            files: data?.Files,
-            images: data?.Images,
-            tags: data?.Tags,
+        fetchData(`/tasks/content/${params.taskId}`, "PUT", {
+            content: content,
         });
     }
 

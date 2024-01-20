@@ -32,17 +32,9 @@ export const Cover = ({
                 url: url
             });
         }
-        fetchData(`/tasks/${params.taskId}`, "PUT", {
-            title: data?.Title || "Untitled",
-            description: data?.Description,
-            coverImage: "",
-            points: data?.Points,
-            completed: data?.Completed,
-            owner: data?.Owner,
-            inCharge: data?.InCharge,
-            files: data?.Files,
-            images: data?.Images,
-            tags: data?.Tags,
+        fetchData(`/tasks/cover/${params.taskId}`, "PUT", {
+            id: params.taskId,
+            coverImage: ""
         });
     };
 

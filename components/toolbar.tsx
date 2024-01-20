@@ -20,9 +20,9 @@ export const Toolbar = ({
     const inputRef = useRef<ElementRef<"textarea">>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [value, setValue] = useState(initialData.Title);
-    
+
     const update = (body: object) => {
-        fetchData(`/tasks/${initialData.ID}`, "PUT", body);
+        fetchData(`/tasks/title/${initialData.ID}`, "PUT", body);
     };
 
     const coverImage = useCoverImage();
@@ -42,17 +42,7 @@ export const Toolbar = ({
     const onInput = (value: string) => {
         setValue(value);
         update({
-            id: initialData.ID,
             title: value,
-            description: initialData.Description,
-            coverImage: coverImage,
-            points: initialData.Points,
-            completed: initialData.Completed,
-            owner: initialData.Owner,
-            inCharge: initialData.InCharge,
-            files: initialData.Files,
-            images: initialData.Images,
-            tags: initialData.Tags,
         });
     };
 
@@ -68,12 +58,12 @@ export const Toolbar = ({
     return (
         <div className="pl-[54px] group relative">
             <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-4">
-                {!!initialData && !preview && (
+                {!initialData.CoverImage && !preview && (
                     <Button
+                        onClick={coverImage.onOpen}
                         className="text-muted-foreground text-xs"
                         variant="outline"
                         size="sm"
-                        onClick={coverImage.onOpen}
                     >
                         <ImageIcon className="h-4 w-4 mr-2" />
                         Add cover

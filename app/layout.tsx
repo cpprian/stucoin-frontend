@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { SessionProvider } from "next-auth/react"
 import { auth } from '@/auth'
 import { EdgeStoreProvider } from '@/lib/edgestore'
+import { ModalProvider } from '@/components/providers/modal-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -34,6 +35,7 @@ export default async function RootLayout({
               storageKey='stucoin-platform'
             >
               <Toaster />
+              <ModalProvider />
               {children}
             </ThemeProvider>
           </body>
