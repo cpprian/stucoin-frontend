@@ -30,6 +30,7 @@ const TaskIdPage = ({
     const [fileStates, setFileStates] = useState<FileState[]>([]);
     const { edgestore } = useEdgeStore();
     const router = useRouter();
+    const [updateFiles, setUpdateFiles] = useState(false);
 
     const onChange = (content: string) => {
         fetchData(`/tasks/content/${params.taskId}`, "PUT", {
@@ -61,7 +62,7 @@ const TaskIdPage = ({
                 setLoading(false);
             }
         })();
-    }, []);
+    }, [updateFiles]);
 
     function updateFileProgress(key: string, progress: FileState['progress']) {
         setFileStates((fileStates) => {
@@ -143,7 +144,7 @@ const TaskIdPage = ({
                                             name: addedFileState.file.name,
                                             size: addedFileState.file.size,
                                         });
-                                        console.log(res);
+                                        setUpdateFiles(!updateFiles);
                                     } catch (err) {
                                         updateFileProgress(addedFileState.key, 'ERROR');
                                     }
@@ -179,6 +180,14 @@ const TaskIdPage = ({
                                             name: file.Name,
                                             size: file.Size,
                                         })
+
+                                        // delete from array
+                                        const index = data.Files?.findIndex((f) => f.Path === file.Path);
+                                        console.log(index);
+                                        if (index !== undefined && index !== -1 && data.Files) {
+                                            data.Files.splice(index, 1);
+                                            setUpdateFiles(!updateFiles);
+                                        }
                                     }}
                                 >
                                     <Trash2Icon className="shrink-0 dark:text-gray-400" />
