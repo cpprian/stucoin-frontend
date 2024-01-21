@@ -1,5 +1,11 @@
 import * as z from "zod";
 
+export const FileSchema = z.object({
+    Name: z.string(),
+    Path: z.string(),
+    Size: z.number(),
+})
+
 export const TaskSchema = z.object({
     Title: z.string(),
     Description: z.string(),
@@ -8,8 +14,7 @@ export const TaskSchema = z.object({
     Completed: z.enum(["COMPLETED", "INCOMPLETED", "ABORTED", "ACCEPTED", "OPEN"]),
     Owner: z.string(),
     InCharge: z.optional(z.string()),
-    Files: z.optional(z.array(z.string())),
-    Images: z.optional(z.array(z.string())),
+    Files: z.optional(z.array(FileSchema)),
     Tags: z.array(z.string()),
 })
 

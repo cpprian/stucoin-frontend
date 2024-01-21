@@ -84,7 +84,6 @@ const TaskPage = () => {
                 owner: user?.id,
                 inCharge: "",
                 files: [],
-                images: [],
                 tags: [],
             }
 
@@ -130,7 +129,15 @@ const TaskPage = () => {
             {!isLoading && tasks.length > 0 && (
                 <DataTable 
                     columns={taskColumns}
-                    data={tasks}
+                    data={
+                        tasks.map((task) => ({
+                            Title: task.Title,
+                            Completed: task.Completed,
+                            Points: task.Points,
+                            ID: task.ID,
+                            OwnerEmail: user?.email || "",
+                        }))
+                    }
                 />
             )}
             {role === "TEACHER" && !isLoading && tasks.length === 0 && (

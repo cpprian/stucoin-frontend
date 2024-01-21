@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react"
 import { auth } from '@/auth'
 import { EdgeStoreProvider } from '@/lib/edgestore'
 import { ModalProvider } from '@/components/providers/modal-provider'
+import { QueryProvider } from '@/components/providers/query-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,21 +26,23 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <EdgeStoreProvider>
-        <html lang="en">
-          <body className={inter.className}>
-            <ThemeProvider
-              attribute='class'
-              defaultTheme='system'
-              enableSystem
-              disableTransitionOnChange
-              storageKey='stucoin-platform'
-            >
-              <Toaster />
-              <ModalProvider />
-              {children}
-            </ThemeProvider>
-          </body>
-        </html>
+        <QueryProvider>
+          <html lang="en">
+            <body className={inter.className}>
+              <ThemeProvider
+                attribute='class'
+                defaultTheme='system'
+                enableSystem
+                disableTransitionOnChange
+                storageKey='stucoin-platform'
+              >
+                <Toaster />
+                <ModalProvider />
+                {children}
+              </ThemeProvider>
+            </body>
+          </html>
+        </QueryProvider>
       </EdgeStoreProvider>
     </SessionProvider>
   )

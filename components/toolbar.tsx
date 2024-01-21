@@ -7,15 +7,19 @@ import { ImageIcon } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Task } from "@/schemas/task";
 import { fetchData } from "@/actions/api";
+import { User } from "@prisma/client";
+import { Badge } from "./ui/badge";
 
 interface ToolbarProps {
     initialData: Task;
     preview?: boolean;
+    currentUser?: string;
 };
 
 export const Toolbar = ({
     initialData,
     preview,
+    currentUser,
 }: ToolbarProps) => {
     const inputRef = useRef<ElementRef<"textarea">>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -28,7 +32,7 @@ export const Toolbar = ({
     const coverImage = useCoverImage();
 
     const enableInput = () => {
-        if (preview) return;
+        if (preview || initialData.Owner !== currentUser) return;
 
         setIsEditing(true);
         setTimeout(() => {
@@ -58,7 +62,7 @@ export const Toolbar = ({
     return (
         <div className="pl-[54px] group relative">
             <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-4">
-                {!initialData.CoverImage && !preview && (
+                {!initialData.CoverImage && !preview && currentUser === initialData.Owner && (
                     <Button
                         onClick={coverImage.onOpen}
                         className="text-muted-foreground text-xs"
@@ -87,6 +91,23 @@ export const Toolbar = ({
                     {value}
                 </div>
             )}
+            <Badge
+                className="absolute top-0 right-0 mt-4 mr-4"
+                variant="outline"
+                color={
+                    initialData.Completed === "COMPLETED" || initialData.Completed === "OPEN" ? "green" :
+                    initialData.Completed === "ABORTED" ? "red" : initialData.Completed === "ACCEPTED" ? "blue" :
+                    "orange"
+                }
+            >
+                <span className="text-sm">{initialData.Completed}</span>
+            </Badge>
+            <Badge
+                className="absolute top-10 right-0 mt-4 mr-4"
+                variant="outline"
+            >
+                <span className="text-sm">Points: {initialData.Points}</span>
+            </Badge>
         </div>
     );
 };
