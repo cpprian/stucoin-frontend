@@ -72,19 +72,7 @@ export const UserButton = () => {
                     <LogoutButton>
                         <div className="flex items-center my-1 gap-x-2">
                             <PersonIcon className="h-4 w-4 mr-2" />
-                            My Profile
-                        </div>
-                    </LogoutButton>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                    asChild
-                    className="w-full cursor-pointer text-muted-foreground"
-                >
-                    <LogoutButton>
-                        <div className="flex items-center my-1 gap-x-2">
-                            <SettingsIcon className="h-4 w-4 mr-2" />
-                            Settings
+                            Wallet
                         </div>
                     </LogoutButton>
                 </DropdownMenuItem>

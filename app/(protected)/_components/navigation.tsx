@@ -1,20 +1,16 @@
 "use client";
 
-import { useSearch } from "@/hooks/use-search";
-import { useSettings } from "@/hooks/use-settings";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, FileText, GiftIcon, MenuIcon, PaperclipIcon, PlusCircle, Search, Settings } from "lucide-react";
+import { Apple, ChevronsLeft, FileText, GiftIcon, MenuIcon, PlusCircle } from "lucide-react";
 import { UserButton } from "@/components/auth/user-button";
 import { Item } from "./item";
 import { Navbar } from "./navbar";
 import { useRewards } from "@/hooks/use-rewards";
-import { useMicroCompetencies } from "@/hooks/use-micro-competencies";
 import { useTasks } from "@/hooks/use-tasks";
-import { FaTasks } from "react-icons/fa";
 import { useCurrentRole } from "@/hooks/use-current-role";
 
 export const Navigation = () => {
@@ -23,8 +19,6 @@ export const Navigation = () => {
     // const settings = useSettings();
     const rewards = useRewards();
     const tasks = useTasks();
-    const microCompetencies = useMicroCompetencies();
-    const search = useSearch();
     const params = useParams();
     const pathname = usePathname();
     const isMobile = useMediaQuery("(max-width: 768px)");
@@ -152,6 +146,11 @@ export const Navigation = () => {
                 <div>
                     <UserButton />
                     <Item
+                        label="Top students"
+                        icon={Apple}
+                        onClick={() => {}}
+                    />
+                    <Item
                         label="See more tasks"
                         icon={FileText}
                         onClick={tasks.onOpen}
@@ -160,6 +159,11 @@ export const Navigation = () => {
                         label="Rewards"
                         icon={GiftIcon}
                         onClick={rewards.onOpen}
+                    />
+                    <Item 
+                        label="My profile"
+                        icon={FileText}
+                        onClick={() => {}}
                     />
                     {role === "TEACHER" && (
                         <Item
