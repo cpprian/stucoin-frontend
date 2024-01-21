@@ -4,12 +4,15 @@ import { db } from "@/lib/db";
 
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { profileId: string } }
 ) {
-  const id = params.userId;
+  const id = params.profileId;
+  console.log("taki sexi id ", req);
   try {
     const user = await db.user.findFirst({
-      where: { id }
+      where: {
+        id: id,
+      },
     });
 
     console.log("taki sexi user ", user);

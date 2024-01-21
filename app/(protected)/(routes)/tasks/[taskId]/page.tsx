@@ -112,7 +112,7 @@ const TaskIdPage = ({
 
     return (
         <div className="pb-40">
-            <Cover url={data.CoverImage} data={data} currentUser={user.id}/>
+            <Cover url={data.CoverImage} data={data} currentUser={user.id} />
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
                 <Toolbar initialData={data} currentUser={user.id} />
                 <Editor
@@ -269,6 +269,44 @@ const TaskIdPage = ({
                                     }}
                                 >
                                     Assign to me
+                                </Button>
+                            </div>
+                        )}
+                        {data.Completed === "INCOMPLETED" && data.InCharge === user.id && (
+                            <div className="py-4">
+                                <Button
+                                    onClick={() => {
+                                        fetchData(`/tasks/complete/${params.taskId}`, "PUT", {
+                                            student: user.id,
+                                        });
+                                        setUpdateDataFlag(!updateDataFlag);
+                                    }}
+                                >
+                                    Complete
+                                </Button>
+                            </div>
+                        )}
+                        {data.Completed === "COMPLETED" && data.Owner === user.id && (
+                            <div className="py-4">
+                                <Button
+                                    onClick={() => {
+                                        fetchData(`/tasks/accept/${params.taskId}`, "PUT", {
+                                            student: user.id,
+                                        });
+                                        setUpdateDataFlag(!updateDataFlag);
+                                    }}
+                                >
+                                    Accept
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        fetchData(`/tasks/reject/${params.taskId}`, "PUT", {
+                                            student: user.id,
+                                        });
+                                        setUpdateDataFlag(!updateDataFlag);
+                                    }}
+                                >
+                                    Reject
                                 </Button>
                             </div>
                         )}
