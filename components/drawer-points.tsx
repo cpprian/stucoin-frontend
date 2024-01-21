@@ -13,9 +13,20 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { fetchData } from "@/actions/api"
 
-export function DrawerPoints() {
-  const [goal, setGoal] = React.useState(350)
+interface DrawerPointsProps {
+  points: number;
+  taskId: string;
+  setUpdate: () => void
+};
+
+export function DrawerPoints({
+  points,
+  taskId,
+  setUpdate,
+}: DrawerPointsProps) {
+  const [goal, setGoal] = React.useState(points === 0 ? 300 : points)
 
   function onClick(adjustment: number) {
     setGoal(Math.max(200, Math.min(400, goal + adjustment)))
@@ -49,7 +60,7 @@ export function DrawerPoints() {
                   {goal}
                 </div>
                 <div className="text-[0.70rem] uppercase text-muted-foreground">
-                    points 
+                  points
                 </div>
               </div>
               <Button
@@ -70,7 +81,18 @@ export function DrawerPoints() {
             </div>
           </div>
           <DrawerFooter>
-            <Button>Submit</Button>
+            <DrawerClose asChild>
+              <Button
+                onClick={() => {
+                  fetchData(`/tasks/points/${taskId}`, "PUT", {
+                    Points: goal
+                  });
+                  setUpdate();
+                }}
+              >
+                Submit
+              </Button>
+            </DrawerClose>
             <DrawerClose asChild>
               <Button variant="outline">Cancel</Button>
             </DrawerClose>

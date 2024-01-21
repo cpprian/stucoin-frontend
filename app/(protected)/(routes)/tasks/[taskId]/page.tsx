@@ -318,7 +318,13 @@ const TaskIdPage = ({
                                 Points
                             </h2>
                             <div className="flex flex-col w-1/6">
-                                <DrawerPoints />
+                                <DrawerPoints 
+                                    points={data.Points}
+                                    taskId={params.taskId}
+                                    setUpdate={() => {
+                                        setUpdateDataFlag(!updateDataFlag);
+                                    }}
+                                />
                             </div>
                         </div>
                     )}
