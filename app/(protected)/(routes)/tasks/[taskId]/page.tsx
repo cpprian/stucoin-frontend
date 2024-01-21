@@ -16,6 +16,7 @@ import { useCoverImage } from "@/hooks/use-cover-image";
 import { useCurrentRole } from "@/hooks/use-current-role";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Badge } from "@/components/ui/badge";
+import { DrawerPoints } from "@/components/drawer-points";
 
 interface TaskIdPageProps {
     params: {
@@ -311,6 +312,16 @@ const TaskIdPage = ({
                             </div>
                         )}
                     </div>
+                    {data.Owner === user.id && (
+                        <div className="flex flex-col gap-2 dark:text-white py-1">
+                            <h2 className="text-3xl font-bold">
+                                Points
+                            </h2>
+                            <div className="flex flex-col w-1/6">
+                                <DrawerPoints />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
