@@ -5,13 +5,14 @@ import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Apple, ChevronsLeft, FileText, GiftIcon, MenuIcon, PlusCircle } from "lucide-react";
+import { Apple, ChevronsLeft, FileText, GiftIcon, MenuIcon, PlusCircle, User } from "lucide-react";
 import { UserButton } from "@/components/auth/user-button";
 import { Item } from "./item";
 import { Navbar } from "./navbar";
 import { useRewards } from "@/hooks/use-rewards";
 import { useTasks } from "@/hooks/use-tasks";
 import { useCurrentRole } from "@/hooks/use-current-role";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export const Navigation = () => {
     const role = useCurrentRole();
@@ -78,17 +79,6 @@ export const Navigation = () => {
         }
     };
 
-    const handleMouseDown = (
-        event: React.MouseEvent<HTMLDivElement, MouseEvent>
-    ) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        isResizingRef.current = true;
-        document.addEventListener("mousemove", handleMouseMove);
-        document.addEventListener("mouseup", handleMouseUp);
-    };
-
     const handleMouseMove = (event: MouseEvent) => {
         if (!isResizingRef.current) return;
         let newWidth = event.clientX;
@@ -148,22 +138,28 @@ export const Navigation = () => {
                     <Item
                         label="Top students"
                         icon={Apple}
-                        onClick={() => {}}
+                        onClick={() => {
+                            router.push("/students");
+                        }}
                     />
                     <Item
-                        label="See more tasks"
+                        label={role === "TEACHER" ? "My tasks" : "See more tasks"}
                         icon={FileText}
-                        onClick={tasks.onOpen}
+                        onClick={() => {
+                            router.push("/tasks");
+                        }}
                     />
                     <Item
                         label="Rewards"
                         icon={GiftIcon}
-                        onClick={rewards.onOpen}
+                        onClick={() => {
+                            router.push("/rewards");
+                        }}
                     />
-                    <Item 
+                    <Item
                         label="My profile"
-                        icon={FileText}
-                        onClick={() => {}}
+                        icon={User}
+                        onClick={() => { }}
                     />
                     {role === "TEACHER" && (
                         <Item
@@ -182,16 +178,9 @@ export const Navigation = () => {
                     isMobile && "left-0 w-full"
                 )}
             >
-                {!!params.documentId ? (
-                    <Navbar
-                        isCollapsed={isCollapsed}
-                        onResetWidth={resetWidth}
-                    />
-                ) : (
-                    <nav className="bg-transparent px-3 py-2 w-full">
-                        {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6 text-muted-foreground" />}
-                    </nav>
-                )}
+                <nav className="bg-transparent px-3 py-2 w-full">
+                    {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6 text-muted-foreground" />}
+                </nav>
             </div>
         </>
     );

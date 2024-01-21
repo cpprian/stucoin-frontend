@@ -17,6 +17,7 @@ import { useCurrentRole } from "@/hooks/use-current-role";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Badge } from "@/components/ui/badge";
 import { DrawerPoints } from "@/components/drawer-points";
+import { useToast } from "@/components/ui/use-toast";
 
 interface TaskIdPageProps {
     params: {
@@ -36,6 +37,7 @@ const TaskIdPage = ({
     const router = useRouter();
     const role = useCurrentRole() ?? "STUDENT";
     const user = useCurrentUser() || null;
+    const toast = useToast();
     const coverImage = useCoverImage();
     const [updateDataFlag, setUpdateDataFlag] = useState(false);
 

@@ -3,20 +3,17 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { TitleCell } from "@/components/title-cell";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { renderDescriptionCell } from "@/lib/renderDescriptionCell";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export type Task = {
     Title: string;
     Points: number;
     Completed: "COMPLETED" | "INCOMPLETED" | "ABORTED" | "ACCEPTED" | "OPEN";
     ID: string;
-    OwnerEmail: string;
+    Description: string;
 };
-
-type File = {
-    Name: string;
-    Path: string;
-    Size: number;
-}
 
 export const taskColumns: ColumnDef<Task>[] = [
     {
@@ -37,18 +34,13 @@ export const taskColumns: ColumnDef<Task>[] = [
         ),
     },
     {
-        accessorKey: "OwnerEmail",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Teacher
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+        accessorKey: "Description",
+        header: "Description",
+        cell: ({ row }) => (
+            <div className="flex items-center space-x-2">
+                {renderDescriptionCell(row.original.Description)}
+            </div>
+        ),
     },
     {
         header: ({ column }) => {
@@ -66,11 +58,11 @@ export const taskColumns: ColumnDef<Task>[] = [
                                 {["ACCEPTED", "COMPLETED", "INCOMPLETED", "ABORTED", "OPEN"].map((status) => (
                                     <div className="grid gap-2">
                                         <div className="grid grid-cols-3 items-center gap-4">
-                                            <Button 
+                                            <Button
                                                 variant="none"
                                                 onClick={() => column.getFilterValue() === status ? column.setFilterValue("") : column.setFilterValue(status)}
                                             >
-                                             {status}
+                                                {status}
                                             </Button>
                                         </div>
                                     </div>
@@ -82,20 +74,34 @@ export const taskColumns: ColumnDef<Task>[] = [
             );
         },
         accessorKey: "Completed",
+        cell: ({ row }) => (
+            <div className="flex items-center space-x-2">
+                <Badge
+                    variant="outline"
+                    color={
+                        row.original.Completed === "COMPLETED" || row.original.Completed === "OPEN" ? "green" :
+                            row.original.Completed === "ABORTED" ? "red" : row.original.Completed === "ACCEPTED" ? "blue" :
+                                "orange"
+                    }
+                >
+                    {row.original.Completed}
+                </Badge>
+            </div>
+        ),
     },
     {
         accessorKey: "Points",
         header: ({ column }) => {
             return (
-              <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-              >
-                Points
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Points
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
             )
-          },
+        },
     },
 ];
 

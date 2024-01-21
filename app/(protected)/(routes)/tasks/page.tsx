@@ -15,6 +15,9 @@ import { convertTaskList } from "@/actions/tasks";
 import { Task } from "@/schemas/task";
 import { DataTable } from "@/components/data-table";
 import { taskColumns } from "@/data/task-columns";
+import { useQuery } from "@tanstack/react-query";
+import { User } from "next-auth";
+import { fetcher } from "@/lib/fetcher";
 
 
 const TaskPage = () => {
@@ -135,7 +138,7 @@ const TaskPage = () => {
                             Completed: task.Completed,
                             Points: task.Points,
                             ID: task.ID,
-                            OwnerEmail: user?.email || "",
+                            Description: task.Description,
                         }))
                     }
                 />
