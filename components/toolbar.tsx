@@ -96,11 +96,17 @@ export const Toolbar = ({
                 variant="outline"
                 color={
                     initialData.Completed === "COMPLETED" || initialData.Completed === "OPEN" ? "green" :
-                    initialData.Completed === "ABORTED" ? "red" :
+                    initialData.Completed === "ABORTED" ? "red" : initialData.Completed === "ACCEPTED" ? "blue" :
                     "orange"
                 }
             >
                 <span className="text-sm">{initialData.Completed}</span>
+            </Badge>
+            <Badge
+                className="absolute top-10 right-0 mt-4 mr-4"
+                variant="outline"
+            >
+                <span className="text-sm">Points: {initialData.Points}</span>
             </Badge>
         </div>
     );

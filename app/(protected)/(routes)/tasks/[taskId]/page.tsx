@@ -217,7 +217,7 @@ const TaskIdPage = ({
                         <div className="justify-between flex">
                             <div className="min-w-0 text-sm">
                                 <div className="overflow-hidden overflow-ellipsis whitespace-nowrap pb-2">
-                                    {user.email}
+                                    {data.Owner}
                                 </div>
                                 <div className="text-xs text-gray-400 dark:text-gray-400">
                                     <Badge variant="outline">Teacher</Badge>
@@ -240,7 +240,7 @@ const TaskIdPage = ({
                                 <div className="justify-between flex">
                                     <div className="min-w-0 text-sm">
                                         <div className="overflow-hidden overflow-ellipsis whitespace-nowrap pb-2">
-                                            {data.Owner}
+                                            {data?.InCharge}
                                         </div>
                                         <div className="text-xs text-gray-400 dark:text-gray-400">
                                             <Badge variant="outline">Student</Badge>
@@ -263,7 +263,7 @@ const TaskIdPage = ({
                                 <Button
                                     onClick={() => {
                                         fetchData(`/tasks/assign/${params.taskId}`, "PUT", {
-                                            student: user.id,
+                                            InCharge: user.id,
                                         });
                                         setUpdateDataFlag(!updateDataFlag);
                                     }}
