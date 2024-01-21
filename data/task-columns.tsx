@@ -4,6 +4,8 @@ import { ArrowUpDown } from "lucide-react";
 import { TitleCell } from "@/components/title-cell";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { renderDescriptionCell } from "@/lib/renderDescriptionCell";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export type Task = {
     Title: string;
@@ -36,9 +38,7 @@ export const taskColumns: ColumnDef<Task>[] = [
         header: "Description",
         cell: ({ row }) => (
             <div className="flex items-center space-x-2">
-                <p className="text-sm text-muted-foreground">
-                    {renderDescriptionCell(row.original.Description)}
-                </p>
+                {renderDescriptionCell(row.original.Description)}
             </div>
         ),
     },
@@ -74,6 +74,20 @@ export const taskColumns: ColumnDef<Task>[] = [
             );
         },
         accessorKey: "Completed",
+        cell: ({ row }) => (
+            <div className="flex items-center space-x-2">
+                <Badge
+                    variant="outline"
+                    color={
+                        row.original.Completed === "COMPLETED" || row.original.Completed === "OPEN" ? "green" :
+                            row.original.Completed === "ABORTED" ? "red" : row.original.Completed === "ACCEPTED" ? "blue" :
+                                "orange"
+                    }
+                >
+                    {row.original.Completed}
+                </Badge>
+            </div>
+        ),
     },
     {
         accessorKey: "Points",

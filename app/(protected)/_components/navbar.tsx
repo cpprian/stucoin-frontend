@@ -1,11 +1,15 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, StepBackIcon } from "lucide-react";
 
 import { Title } from "./title";
 import { Menu } from "./menu";
-import { Publish } from "./publish";
+import { useEffect, useState } from "react";
+import { Task } from "@/schemas/task";
+import { fetchData } from "@/actions/api";
+import { ModeToggle } from "@/components/mode-toggle";
+import { Button } from "@/components/ui/button";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -18,9 +22,29 @@ export const Navbar = ({
 }: NavbarProps) => {
   const params = useParams();
 
-  const document = undefined;
+  const [data, setData] = useState<Task | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (document === undefined) {
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await fetchData(`/tasks/${params.taskId}`, "GET", {});
+        data?.json().then((data) => {
+          console.log(data)
+          setData(data);
+        });
+        setError(error);
+      } catch (e: any) {
+        console.error(e);
+        setError(e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  if (data === null) {
     return (
       <nav className="bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center justify-between">
         <Title.Skeleton />
@@ -29,10 +53,6 @@ export const Navbar = ({
         </div>
       </nav>
     )
-  }
-
-  if (document === null) {
-    return null;
   }
 
   return (
@@ -46,10 +66,16 @@ export const Navbar = ({
           />
         )}
         <div className="flex items-center justify-between w-full">
-          <Title initialData={document} />
+          <Button
+            onClick={() => {
+              window.history.back();
+            }}
+          >
+            <StepBackIcon />
+          </Button>
+          <span>{data.Title}</span>
           <div className="flex items-center gap-x-2">
-            <Publish initialData={document} />
-            <Menu documentId={document} />
+            <ModeToggle />
           </div>
         </div>
       </nav>

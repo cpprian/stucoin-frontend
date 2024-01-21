@@ -10,7 +10,6 @@ interface TitleProps {
   initialData: {
     _id: string;
     title: string;
-    icon?: React.ReactNode;
   };
 };
 
@@ -58,7 +57,6 @@ export const Title = ({
 
   return (
     <div className="flex items-center gap-x-1">
-      {!!initialData.icon && <p>{initialData.icon}</p>}
       {isEditing ? (
         <Input
           ref={inputRef}

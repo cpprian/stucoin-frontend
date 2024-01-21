@@ -20,7 +20,7 @@ export const renderDescriptionCell = (description: string) => {
         });
         
         return (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm">
                 {contentValue.length > 5 ? contentValue.slice(0, 5).join(" ") + "..." : contentValue.join(" ")}
             </p>
         );

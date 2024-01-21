@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/avatar";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { LogoutButton } from "@/components/auth/logout-button";
-import { ChevronsLeftRight, SettingsIcon } from "lucide-react";
+import { ChevronsLeftRight, SettingsIcon, Wallet } from "lucide-react";
 
 export const UserButton = () => {
     const user = useCurrentUser();
@@ -71,7 +71,7 @@ export const UserButton = () => {
                 >
                     <LogoutButton>
                         <div className="flex items-center my-1 gap-x-2">
-                            <PersonIcon className="h-4 w-4 mr-2" />
+                            <Wallet className="h-4 w-4 mr-2" />
                             Wallet
                         </div>
                     </LogoutButton>
